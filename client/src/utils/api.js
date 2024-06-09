@@ -28,15 +28,20 @@ export const login = async (email, password) => {
   }
 };
 
-export const getEvents = async () => {
+export const getEvents = async (token) => {
   try {
-    const response = await api.get('/events');
+    const response = await api.get('/events', {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     return response.data;
   } catch (err) {
     console.error('Error fetching events:', err);
     throw err;
   }
 };
+
 
 export const getEvent = async (id) => {
   try {

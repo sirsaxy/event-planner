@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getEvents } from '../utils/api';
+import { getEvents, deleteEvent } from '../utils/api';
+import EventList from '../components/EventList';
 
 const EventListPage = ({ token }) => {
   const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -10,22 +13,38 @@ const EventListPage = ({ token }) => {
         const eventsData = await getEvents(token);
         setEvents(eventsData);
       } catch (err) {
+        setError('Error fetching events. Please try again later.');
         console.error('Error fetching events:', err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchEvents();
   }, [token]);
 
+  const handleDelete = async (eventId) => {
+    try {
+      await deleteEvent(eventId, token); // Add token here
+      setEvents(events.filter(event => event._id !== eventId));
+    } catch (err) {
+      console.error('Error deleting event:', err);
+      setError('Error deleting event. Please try again later.');
+    }
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <div>
       <h1>Event List</h1>
-      {events.map((event) => (
-        <div key={event._id}>
-          <h2>{event.title}</h2>
-          <p>{event.description}</p>
-        </div>
-      ))}
+      <EventList events={events} onDelete={handleDelete} />
     </div>
   );
 };

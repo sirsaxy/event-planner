@@ -6,13 +6,15 @@ const EventDetailPage = () => {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await getEvent(id);
-        setEvent(response.data);
+        const event = await getEvent(id);
+        setEvent(event);
       } catch (error) {
+        setError('Error fetching event. Please try again later.');
         console.error('Error fetching event:', error);
       } finally {
         setLoading(false);
@@ -24,6 +26,10 @@ const EventDetailPage = () => {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   if (!event) {

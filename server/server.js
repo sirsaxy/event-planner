@@ -5,12 +5,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const passport = require('passport');
+require('./middleware/passport')(passport);
+
 const authRouter = require('./routes/auth');
 const eventRouter = require('./routes/events');
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
 
 const mongoUri = process.env.MONGODB_URI;
 const jwtSecret = process.env.JWT_SECRET;
@@ -26,7 +31,10 @@ if (!jwtSecret) {
   throw new Error('JWT_SECRET is not defined in the environment variables');
 }
 
-mongoose.connect(mongoUri);
+mongoose.connect(mongoUri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 app.use('/api/auth', authRouter);
 app.use('/api/events', eventRouter);

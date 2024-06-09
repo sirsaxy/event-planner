@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Event = require('../models/Event');
-const auth = require('../middleware/auth'); // Correct import path
+const passport = require('passport'); // use passport as middleware
 
 // Get all events
-router.get('/', auth, async (req, res) => {
+router.get('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const events = await Event.find();
     res.json(events);
@@ -14,7 +14,7 @@ router.get('/', auth, async (req, res) => {
 });
 
 // Get a single event by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) {
@@ -27,7 +27,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Create a new event
-router.post('/', auth, async (req, res) => {
+router.post('/', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { title, description, date, location } = req.body;
   const event = new Event({
     title,
@@ -44,7 +44,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Update an event by ID
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
   const { title, description, date, location } = req.body;
   try {
     const event = await Event.findById(req.params.id);
@@ -64,7 +64,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Delete an event by ID
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) {

@@ -1,46 +1,85 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { register } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Coordinator'); // Default role, change as needed
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await register({ name, email, password, role });
-      console.log('User registered:', response);
-      window.location.href = '/login';
-    } catch (err) {
-      console.error('Error registering user:', err);
-    }
-  };
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      password: '',
+      role: 'Coordinator', // Default role
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required('Required'),
+      email: Yup.string().email('Invalid email address').required('Required'),
+      password: Yup.string().required('Required'),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await register(values);
+        console.log('User registered:', response);
+        navigate('/login');
+      } catch (err) {
+        console.error('Error registering user:', err);
+      }
+    },
+  });
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        placeholder="Name"
-        required
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
+    <form onSubmit={formik.handleSubmit}>
+      <div>
+        <label htmlFor="name">Name</label>
+        <input
+          type="text"
+          name="name"
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          placeholder="Name"
+          required
+        />
+        {formik.errors.name ? <div>{formik.errors.name}</div> : null}
+      </div>
+      <div>
+        <label htmlFor="email">Email</label>
+        <input
+          type="email"
+          name="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          placeholder="Email"
+          required
+        />
+        {formik.errors.email ? <div>{formik.errors.email}</div> : null}
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          name="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          placeholder="Password"
+          required
+        />
+        {formik.errors.password ? <div>{formik.errors.password}</div> : null}
+      </div>
+      <div>
+        <label htmlFor="role">Role</label>
+        <select
+          name="role"
+          value={formik.values.role}
+          onChange={formik.handleChange}
+        >
+          <option value="Coordinator">Coordinator</option>
+          <option value="Guest">Guest</option>
+          <option value="Vendor">Vendor</option>
+        </select>
+      </div>
       <button type="submit">Register</button>
     </form>
   );
