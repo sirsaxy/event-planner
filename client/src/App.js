@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import LoginPage from './components/Login';
-import RegisterPage from './components/Register';
-import CreateEventPage from './components/CreateEvent';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import CreateEventPage from './pages/CreateEventPage';
 import EventListPage from './pages/EventListPage';
-import EventDetailPage from './components/EventDetail';
+import EventDetailPage from './pages/EventDetailPage';
 import Navbar from './components/Navbar';
 
 const App = () => {

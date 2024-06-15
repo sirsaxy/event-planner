@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { getEvent } from '../utils/api';
 
-const EventDetailPage = ({ token }) => {
-  const { id } = useParams();
+const EventDetailPage = () => {
+  const { eventId } = useParams(); // Correct parameter name
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,19 +11,30 @@ const EventDetailPage = ({ token }) => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const eventData = await getEvent(id, token);
-        setEvent(eventData);
-      } catch (err) {
-        setError(err);
+        const event = await getEvent(eventId);
+        setEvent(event);
+      } catch (error) {
+        setError('Error fetching event. Please try again later.');
+        console.error('Error fetching event:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchEvent();
-  }, [id, token]);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error fetching event: {error.message}</p>;
+    fetchEvent();
+  }, [eventId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!event) {
+    return <div>Event not found</div>;
+  }
 
   return (
     <div>
