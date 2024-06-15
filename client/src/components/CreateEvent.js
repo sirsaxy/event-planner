@@ -19,7 +19,7 @@ const CreateEvent = ({ token }) => {
     }),
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await createEvent(token, values);
+        const response = await createEvent(values);
         console.log('Event created:', response);
         resetForm();
       } catch (err) {

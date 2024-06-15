@@ -29,24 +29,38 @@ const LoginPage = ({ setToken }) => {
 
   return (
     <form onSubmit={formik.handleSubmit}>
-      <input
-        type="email"
-        name="email"
-        value={formik.values.email}
-        onChange={formik.handleChange}
-        placeholder="Email"
-        required
-      />
-      {formik.errors.email ? <div>{formik.errors.email}</div> : null}
-      <input
-        type="password"
-        name="password"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        placeholder="Password"
-        required
-      />
-      {formik.errors.password ? <div>{formik.errors.password}</div> : null}
+      <div>
+        <label htmlFor="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          placeholder="Email"
+          required
+        />
+        {formik.touched.email && formik.errors.email ? (
+          <div>{formik.errors.email}</div>
+        ) : null}
+      </div>
+      <div>
+        <label htmlFor="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          placeholder="Password"
+          required
+        />
+        {formik.touched.password && formik.errors.password ? (
+          <div>{formik.errors.password}</div>
+        ) : null}
+      </div>
       <button type="submit">Login</button>
     </form>
   );
