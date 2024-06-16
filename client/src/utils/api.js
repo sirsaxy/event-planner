@@ -63,9 +63,14 @@ export const register = async (userData) => {
   }
 };
 
-export const createEvent = async (eventData) => {
+export const createEvent = async (token, eventData) => {
   try {
-    const response = await api.post('/events', eventData);
+    const response = await api.post('/events', eventData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
     return response.data;
   } catch (error) {
     console.error('Error creating event:', error);
