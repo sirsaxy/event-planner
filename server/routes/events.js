@@ -70,9 +70,10 @@ router.delete('/:id', passport.authenticate('jwt', { session: false }), async (r
     if (!event) {
       return res.status(404).json({ message: 'Event not found' });
     }
-    await event.remove();
+    await event.deleteOne({ _id: req.params.id });
     res.json({ message: 'Event deleted' });
   } catch (err) {
+    console.error('Error deleting event:', err); // Add this line to log the error
     res.status(500).json({ message: err.message });
   }
 });
